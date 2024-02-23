@@ -2,6 +2,8 @@
 
 #![no_main]
 
+mod vga_buffer;
+
 static HELLO: &[u8] = b"Hello World!";
 
 
