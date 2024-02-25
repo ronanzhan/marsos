@@ -1,5 +1,5 @@
 [build]
-target = "x86_64-mars_os.json"
+target = "targets/x86_64.json"
 
 [unstable]
 build-std-features = ["compiler-builtins-mem"]
