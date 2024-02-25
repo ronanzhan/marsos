@@ -4,6 +4,17 @@ use lazy_static::lazy_static;
 use spin::Mutex;
 use volatile::Volatile;
 
+
+lazy_static! {
+    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
+        column_position: 0,
+        color_code: ColorCode::new(Color::Yellow, Color::Black),
+        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+    });
+}
+
+
+
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
@@ -26,6 +37,7 @@ pub enum Color {
     White = 15,
 }
 
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 struct ColorCode(u8);
@@ -44,8 +56,8 @@ struct ScreenChar {
 
 }
 
-const BUFFER_WIDTH: usize = 25;
-const BUFFER_HEIGHT: usize = 80;
+const BUFFER_HEIGHT: usize = 25;
+const BUFFER_WIDTH: usize = 80;
 
 
 #[repr(transparent)]
@@ -122,13 +134,6 @@ impl fmt::Write for Writer {
     }
 }
 
-lazy_static! {
-    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
-        column_position: 0,
-        color_code: ColorCode::new(Color::Yellow, Color::Black),
-        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
-    });
-}
 
 #[macro_export]
 macro_rules! print {
