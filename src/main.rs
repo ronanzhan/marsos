@@ -3,20 +3,14 @@
 #![no_main]
 
 #![feature(custom_test_frameworks)]
-#![test_runner(crate::test_runner)]
+#![test_runner(marsos::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
 
 mod vga_buffer;
+mod serial;
 
-
-#[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
-    println!("{}", info);
-
-    loop {}
-}
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
@@ -24,21 +18,20 @@ pub extern "C" fn _start() -> ! {
 
     #[cfg(test)]
     test_main();
+
     loop {}
 }
 
-
-#[cfg(test)]
-pub fn test_runner(tests: &[&dyn Fn()]) {
-    println!("Running {} tests", tests.len());
-    for test in tests {
-        test();
-    }
+/// This function is called on panic.
+#[cfg(not(test))]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    println!("{}", info);
+    loop {}
 }
 
-#[test_case]
-fn trivial_assertion() {
-    print!("trivial assertion... ");
-    assert_eq!(1, 1);
-    println!("[ok]");
+#[cfg(test)]
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    marsos::test_panic_handler(info)
 }
