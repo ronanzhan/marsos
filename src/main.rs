@@ -14,29 +14,16 @@ mod serial;
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    println!("123456789022345678903234567890423456789052345678906234567890");
+    println!("Hello {}", "MarsOS");
 
     marsos::init(); // new
-
-    // invoke a breakpoint exception
-    // x86_64::instructions::interrupts::int3(); // new
-
-    // unsafe {
-    //     *(0xdeadbeef as *mut u8) = 42;
-    // };
-
-    fn stack_overflow() {
-        stack_overflow(); // 每一次递归都会将返回地址入栈
-    }
-
-    // 触发 stack overflow
-    stack_overflow();
 
     #[cfg(test)]
     test_main();
 
     println!("It did not crash!");
-    loop {}
+
+    marsos::hlt_loop();
 }
 
 /// This function is called on panic.
@@ -44,7 +31,7 @@ pub extern "C" fn _start() -> ! {
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop {}
+    marsos::hlt_loop();
 }
 
 #[cfg(test)]

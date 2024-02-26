@@ -6,15 +6,14 @@
 #![test_runner(crate::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+use core::panic::PanicInfo;
+
 pub mod serial;
 pub mod vga_buffer;
 
 pub mod interrupts;
 
 pub mod gdt;
-
-use core::panic::PanicInfo;
-
 
 pub trait Testable {
     fn run(&self) -> ();
@@ -81,4 +80,13 @@ pub fn init() {
     gdt::init();
 
     interrupts::init_idt();
+
+    unsafe { interrupts::PICS.lock().initialize(); }
+    x86_64::instructions::interrupts::enable();
+}
+
+pub fn hlt_loop() -> ! {
+    loop {
+        x86_64::instructions::hlt();
+    }
 }
