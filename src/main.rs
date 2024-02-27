@@ -8,23 +8,31 @@
 
 use core::panic::PanicInfo;
 
+use bootloader::{BootInfo, entry_point};
+use x86_64::structures::paging::{Page, Translate};
+use x86_64::VirtAddr;
+
+use marsos::memory;
+
 mod vga_buffer;
 mod serial;
 
 
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
-    println!("Hello {}", "MarsOS");
+entry_point!(kernel_main);
 
-    marsos::init(); // new
+fn kernel_main(boot_info: &'static BootInfo) -> ! {
+    println!("Hello {}\n", "MarsOS");
+
+    marsos::init();
 
     #[cfg(test)]
     test_main();
 
-    println!("It did not crash!");
+    println!("MarsOS booting successfully!");
 
     marsos::hlt_loop();
 }
+
 
 /// This function is called on panic.
 #[cfg(not(test))]
