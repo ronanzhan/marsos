@@ -1,12 +1,10 @@
-use core::ops::DerefMut;
 use bootloader::bootinfo::{MemoryMap, MemoryRegionType};
-use x86_64::registers::control::Cr3;
-use x86_64::structures::paging::{FrameAllocator, Mapper, OffsetPageTable, Page, PageTable, PhysFrame, Size4KiB};
 use x86_64::{PhysAddr, VirtAddr};
+use x86_64::registers::control::Cr3;
+use x86_64::structures::paging::{FrameAllocator, OffsetPageTable, PageTable, PhysFrame, Size4KiB};
 use x86_64::structures::paging::page_table::FrameError;
 
 unsafe fn active_level_4_table(physical_memory_offset: VirtAddr) -> &'static mut PageTable {
-    use x86_64::registers::control::Cr3;
 
     let (level_4_table_frame, _) = Cr3::read();
 

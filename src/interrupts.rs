@@ -81,8 +81,6 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(
     _stack_frame: InterruptStackFrame)
 {
     use pc_keyboard::{DecodedKey, HandleControl, Keyboard, layouts, ScancodeSet1};
-    use spin::Mutex;
-    use x86_64::instructions::port::Port;
 
     lazy_static! {
         static ref KEYBOARD :Mutex<Keyboard<layouts::Us104Key, ScancodeSet1>>
