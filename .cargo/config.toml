@@ -1,9 +1,10 @@
 [build]
-target = "targets/x86_64.json"
+target = "targets/riscv_64.json"
+#target = "riscv64gc-unknown-none-elf"
 
-[unstable]
-build-std-features = ["compiler-builtins-mem"]
-build-std = ["core", "compiler_builtins", "alloc"]
-
-[target.'cfg(target_os = "none")']
-runner = "bootimage runner"
+#[unstable]
+#build-std-features = ["compiler-builtins-mem"]
+#build-std = ["core", "compiler_builtins", "alloc"]
+#
+#[target.'cfg(target_os = "none")']
+#runner = "bootimage runner"
