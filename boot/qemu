@@ -1,0 +1,7 @@
+
+ rust-objcopy.exe .\target\riscv64gc-unknown-none-elf\release\marsos .\target\riscv64gc-unknown-none-elf\release\marsos.bin
+
+
+
+
+qemu-system-riscv64 -machine virt -nographic -bios boot/rustsbi-qemu.bin -device loader,file=target/riscv64gc-unknown-none-elf/release/marsos.bin,addr=0x80200000

@@ -1,10 +1,10 @@
 [build]
-target = "targets/riscv_64.json"
-#target = "riscv64gc-unknown-none-elf"
+#target = "targets/riscv_64.json"
+target = "riscv64gc-unknown-none-elf"
 
-#[unstable]
-#build-std-features = ["compiler-builtins-mem"]
-#build-std = ["core", "compiler_builtins", "alloc"]
-#
-#[target.'cfg(target_os = "none")']
-#runner = "bootimage runner"
+
+
+[target.riscv64gc-unknown-none-elf]
+rustflags = [
+    "-Clink-arg=-Tsrc/linker.ld", "-Cforce-frame-pointers=yes"
+]

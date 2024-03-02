@@ -11,6 +11,7 @@ homepage = "https://github.com/ronanzhan/marsos/wiki"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+sbi-rt = { version = "0.0.2", features = ["legacy"] }
 
 
 
