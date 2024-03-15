@@ -11,11 +11,16 @@ homepage = "https://github.com/ronanzhan/marsos/wiki"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+riscv = { git = "https://github.com/rcore-os/riscv", features = ["inline-asm"] }
 sbi-rt = { version = "0.0.2", features = ["legacy"] }
+lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
+log = "0.4"
 
 
 
 [package.metadata.bootimage]
 
+[profile.release]
+debug = true
 
 
