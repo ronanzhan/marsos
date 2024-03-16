@@ -1,5 +1,5 @@
 
- rust-objcopy.exe .\target\riscv64gc-unknown-none-elf\release\marsos .\target\riscv64gc-unknown-none-elf\release\marsos.bin
+ rust-objcopy.exe --strip-all .\target\riscv64gc-unknown-none-elf\release\marsos .\target\riscv64gc-unknown-none-elf\release\marsos.bin
 
 
 

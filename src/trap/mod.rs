@@ -1,12 +1,15 @@
 use core::arch::global_asm;
-use riscv::register::mtvec::TrapMode;
-use riscv::register::{scause, stval, stvec};
-use riscv::register::scause::{Exception, Trap};
-use crate::batch::run_next_app;
 
-mod context;
+use riscv::register::{scause, stval, stvec};
+use riscv::register::mtvec::TrapMode;
+use riscv::register::scause::{Exception, Trap};
 
 pub use context::TrapContext;
+
+use crate::batch::run_next_app;
+use crate::syscall::syscall;
+
+mod context;
 
 global_asm!(include_str!("trap.S"));
 
@@ -26,7 +29,10 @@ pub fn trap_handler(cx: &mut TrapContext) -> &mut TrapContext {
     let scause = scause::read();
     let stval = stval::read();
     match scause.cause() {
-        Trap::Exception(Exception::UserEnvCall) => {}
+        Trap::Exception(Exception::UserEnvCall) => {
+            cx.sepc += 4;
+            cx.x[10] = syscall(cx.x[17], [cx.x[10], cx.x[11], cx.x[12]]) as usize;
+        }
         Trap::Exception(Exception::StoreFault) | Trap::Exception(Exception::StorePageFault) => {
             println!("[kernel] PageFault in application, kernel killed it.");
             run_next_app();
@@ -36,7 +42,11 @@ pub fn trap_handler(cx: &mut TrapContext) -> &mut TrapContext {
             run_next_app();
         }
         _ => {
-            panic!("Unsupported trap {:?}, stval ={:#x}!", scause.cause(), stval);
+            panic!(
+                "Unsupported trap {:?}, stval = {:#x}!",
+                scause.cause(),
+                stval
+            );
         }
     }
     cx
