@@ -90,6 +90,9 @@ impl TaskManager {
             drop(inner);
 
             unsafe {
+                //switch完就会执行__restore，因为切换了栈，A->B，就会加载应用B的运行时数据，
+                //包括ra，这个ra是__switch的返回地址，初始化的时候是__restroe（goto_restore），也就是说应用第一次执行后会跳到__restore执行
+                // 包括sepc（已经修改为B的下一条指令）等，就会执行B的指令
                 __switch(
                     current_task_ctx_ptr,
                     next_task_ctx_ptr,
@@ -109,8 +112,6 @@ impl TaskManager {
                 inner.tasks[*id].task_status == TaskStatus::Ready
             })
     }
-
-
 }
 
 pub fn run_first_task() {

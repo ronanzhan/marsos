@@ -1,3 +1,5 @@
+const SBI_SET_TIMER: usize = 0;
+
 pub fn console_putchar(c: usize) {
     #[allow(deprecated)]
     sbi_rt::legacy::console_putchar(c);
@@ -11,4 +13,8 @@ pub fn shutdown(failure: bool) -> ! {
         system_reset(Shutdown, SystemFailure);
     }
     unreachable!()
+}
+
+pub fn set_timer(timer: usize) {
+    sbi_rt::set_timer(timer as _);
 }

@@ -1,6 +1,7 @@
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 #[repr(C)]
 pub struct TaskContext {
+    // 返回地址
     ra: usize,
     sp: usize,
     //保存12个被调用者保存的寄存器，也就是 s0-s11，这部分寄存器是需要被调用者来负责保存的

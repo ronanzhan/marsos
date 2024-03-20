@@ -45,6 +45,8 @@ impl UserStack {
 
 
 pub fn load_apps() {
+    println!("[kernel] Start loading applications...");
+
     extern "C" {
         fn _num_app();
     }
@@ -77,6 +79,7 @@ pub fn load_apps() {
     unsafe {
         asm!("fence.i");
     }
+    println!("[kernel] loading applications succeeded, total applications is {}...", num_app);
 }
 
 /**

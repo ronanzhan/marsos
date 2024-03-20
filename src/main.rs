@@ -1,5 +1,5 @@
 // #![deny(missing_docs)]
-#![deny(warnings)]
+// #![deny(warnings)]
 #![no_std]
 #![no_main]
 #![feature(panic_info_message)]
@@ -17,6 +17,12 @@ pub mod syscall;
 pub mod task;
 pub mod trap;
 
+mod logging;
+mod timer;
+
+#[path = "boards/qemu.rs"]
+mod board;
+
 global_asm!(include_str!("entry.asm"));
 global_asm!(include_str!("link_app.S"));
 
@@ -33,10 +39,36 @@ fn clear_bss() {
 
 #[no_mangle]
 pub fn marsos_entry() -> ! {
+    println!("[kernel] MarsOS is booting...");
+    logging::init();
+    print_section_info();
     clear_bss();
-    println!("[kernel] Hello, world!");
+    println!("[kernel] Hello MarsOS");
     trap::init();
     loader::load_apps();
+    trap::enable_timer_interrupt();
+    timer::set_next_trigger();
     task::run_first_task();
     panic!("Unreachable in rust_main!");
+}
+
+pub fn print_section_info() {
+    extern "C" {
+        fn stext();
+        fn etext();
+        fn srodata();
+        fn erodata();
+        fn sdata();
+        fn edata();
+        fn sbss();
+        fn ebss();
+
+        fn __restore();
+    }
+
+    println!("[kernel] text:\t {:x}..{:x}", stext as usize, etext as usize);
+    println!("[kernel] rodata: {:x}..{:x}", srodata as usize, erodata as usize);
+    println!("[kernel] data:\t {:x}..{:x}", sdata as usize, edata as usize);
+    println!("[kernel] bss:\t {:x}..{:x}", sbss as usize, ebss as usize);
+    println!("[kernel] __restore: {}", __restore as usize);
 }
