@@ -3,6 +3,10 @@
 #![no_std]
 #![no_main]
 #![feature(panic_info_message)]
+#![feature(alloc_error_handler)]
+
+
+extern crate alloc;
 
 use core::arch::global_asm;
 
@@ -19,6 +23,8 @@ pub mod trap;
 
 mod logging;
 mod timer;
+
+mod mm;
 
 #[path = "boards/qemu.rs"]
 mod board;
@@ -39,13 +45,13 @@ fn clear_bss() {
 
 #[no_mangle]
 pub fn marsos_entry() -> ! {
-    println!("[kernel] MarsOS is booting...");
-    logging::init();
-    print_section_info();
     clear_bss();
-    println!("[kernel] Hello MarsOS");
+    println!("[kernel] Hello, Marsos!");
+    mm::init();
+    println!("[kernel] back to world!");
+    // mm::remap_test();
     trap::init();
-    loader::load_apps();
+    //trap::enable_interrupt();
     trap::enable_timer_interrupt();
     timer::set_next_trigger();
     task::run_first_task();
